@@ -209,20 +209,22 @@ class Hash
     mash
   end
   
-  # Returns a duplicate of the current hash with
-  # all of the keys converted to strings.
-  def stringify_keys
-    dup.stringify_keys!
-  end
-  
-  # Converts all of the keys to strings
-  def stringify_keys!
-    keys.each{|k| 
-      v = delete(k)
-      self[k.to_s] = v
-      v.stringify_keys! if v.is_a?(Hash)
-      v.each{|p| p.stringify_keys! if p.is_a?(Hash)} if v.is_a?(Array)
-    }
-    self
+  unless Rails.env
+    # Returns a duplicate of the current hash with
+    # all of the keys converted to strings.
+    def stringify_keys
+      dup.stringify_keys!
+    end
+
+    # Converts all of the keys to strings
+    def stringify_keys!
+      keys.each{|k| 
+        v = delete(k)
+        self[k.to_s] = v
+        v.stringify_keys! if v.is_a?(Hash)
+        v.each{|p| p.stringify_keys! if p.is_a?(Hash)} if v.is_a?(Array)
+      }
+      self
+    end
   end
 end
